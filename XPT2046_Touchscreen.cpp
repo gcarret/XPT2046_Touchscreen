@@ -32,6 +32,17 @@ void isrPin(void);
 
 bool XPT2046_Touchscreen::begin()
 {
+	 #if defined(__MK64FX512__) || defined(__MK66FX1M0__)
+   	 if ((_mosi == 11 || _mosi == 7 || _mosi == 28) && (_miso == 12 || _miso == 8 || _miso == 39) 
+    		&& (_sclk == 13 || _sclk == 14 || _sclk == 27)) {
+	#else
+   	 if ((_mosi == 11 || _mosi == 7) && (_miso == 12 || _miso == 8) && (_sclk == 13 || _sclk == 14)) {
+   	 #endif	
+        	SPI.setMOSI(_mosi);
+        	SPI.setMISO(_miso);
+        	SPI.setSCK(_sclk);
+	} else
+		return; // not valid pins...
 	SPI.begin();
 	pinMode(csPin, OUTPUT);
 	digitalWrite(csPin, HIGH);
